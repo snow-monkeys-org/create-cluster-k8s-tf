@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # setup terraform environment
-      - uses: snow-monkeys-org/create-cluster-k8s-tf/.github/actions/setup-terraform-cloud/action.yml@main
+      - uses: snow-monkeys-org/create-cluster-k8s-tf/.github/actions/setup-terraform-cloud@main
         with:
           message: "Hello, world!"
           
