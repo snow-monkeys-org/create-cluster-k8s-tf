@@ -60,6 +60,9 @@ jobs:
 
       # setup terraform environment
       - uses: ./.github/actions/setup-terraform-cloud.yml
+        with:
+          message: "Hello, world!"
+          
 #        with:
 #          organization: ${{ inputs.organization }}
 #          workspace: ${{ inputs.workspace }}
