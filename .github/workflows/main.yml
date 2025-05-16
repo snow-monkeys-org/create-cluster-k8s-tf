@@ -1,0 +1,74 @@
+name: Deploy in cluster kubernetes
+
+on:
+  workflow_call:
+    inputs:
+      cloud-provider:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      node-size:
+        required: false
+        type: string
+        default: 'g4s.kube.medium'
+      node-count:
+        required: false
+        type: number
+        default: 2
+      apps:
+        required: false
+        type: string
+        default: 'argocd'
+      destroy:
+        required: false
+        type: boolean
+        default: false
+      organization:
+        required: true
+        type: string
+      workspace:
+        required: true
+        type: string
+      region:
+        required: false
+        type: string
+        default: 'NYC1'
+    secrets:
+      civo-token:
+        required: true
+      github-token:
+        required: false
+      snow-token:
+        required: false
+      tf_api-token:
+        required: true
+#    outputs:
+#      load_balancer_ip:
+#        description: 'Load balancer IP address from CIVO'
+#        value: ${{ jobs.create-civo-with-cluster.outputs.load_balancer_ip }}
+     
+   
+jobs:
+
+  notify-snow-monkeys-dashboard: 
+    runs-on: ubuntu-22.04
+    steps:
+
+      - uses: actions/checkout@v4
+
+      # setup terraform environment
+      - uses: ./.github/actions/setup-terraform-cloud.yml
+#        with:
+#          organization: ${{ inputs.organization }}
+#          workspace: ${{ inputs.workspace }}
+#          tf_api-token: ${{ secrets.tf_api-token }}
+#          civo-token: ${{ secrets.civo-token }}
+
+
+      # 
+      # add variables to terraform cloud
+
+      - name: Notify
+        run: echo "notify snow monkeys dashboard"

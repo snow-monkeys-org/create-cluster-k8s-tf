@@ -1,0 +1,23 @@
+name: "Setup Terraform Cloud"
+description: "Setup Terraform Cloud for the workflow"
+
+#inputs:
+#  organization:
+#    description: "Terraform Cloud organization name"
+#    required: true
+#  workspace:
+#    description: "Terraform Cloud workspace name"
+#    required: true
+#  tf_api-token:
+#    description: "Terraform Cloud API token"
+#    required: true
+#  civo-token:
+#    description: "Civo API token"
+#    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Call
+      run: echo "Call hello TF"
