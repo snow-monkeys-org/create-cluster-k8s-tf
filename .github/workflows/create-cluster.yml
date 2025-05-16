@@ -1,0 +1,15 @@
+name: Deploy in cluster kubernetes
+
+on:
+  workflow_call:
+   
+jobs:
+
+  notify-snow-monkeys-dashboard: 
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Notify
+        run: echo "notify snow monkeys dashboard"
+
+  call-iac-create-cluster:
+    uses: snow-monkeys-org/connectors-monkey/.github/workflows/test-app.yml@main
