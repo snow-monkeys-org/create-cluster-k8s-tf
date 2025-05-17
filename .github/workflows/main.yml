@@ -44,10 +44,10 @@ on:
         required: false
       tf_api-token:
         required: true
-#    outputs:
-#      load_balancer_ip:
-#        description: 'Load balancer IP address from CIVO'
-#        value: ${{ jobs.create-civo-with-cluster.outputs.load_balancer_ip }}
+    outputs:
+      load_balancer_ip:
+        description: 'Load balancer IP address from CIVO'
+        value: ${{ jobs.create-civo-with-cluster.outputs.load_balancer_ip }}
      
    
 jobs:
@@ -59,10 +59,64 @@ jobs:
       - uses: actions/checkout@v4
 
       # setup terraform environment
-      - uses: snow-monkeys-org/create-cluster-k8s-tf/.github/actions/setup-terraform-cloud@main
-        with:
-          message: "Hello, world!"
-          
+      - name: Get organization id
+        if: ${{ ! inputs.destroy }}
+        run: |
+          echo "----- get organization id -----"
+          WORKSPACE_ID=$(curl -X GET \
+          -H "Authorization: Bearer ${{ secrets.tf_api-token }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          "https://app.terraform.io/api/v2/organizations/${{ inputs.organization }}/workspaces" | jq -r '.data[] | select(.attributes.name == ${{ inputs.workspace }}) | .id' file.json)
+ 
+      
+      - name: Setting civo variable to terraform cloud
+        if: ${{ ! inputs.destroy }}
+        run: |
+          echo "----- setting variables to terraform cloud civo-token sensitive - $WORKSPACE_ID-----"
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.tf_api-token }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d "{\"data\": { \"type\": \"vars\",  \"attributes\": { \"key\":\"TF_VAR_civo-token\", \"value\": \"${{secrets.civo-token}}\", \"description\": \"civo token\", \
+          \"category\": \"terraform\", \"hcl\": false, \"sensitive\": true }}}" \
+          https://app.terraform.io/api/v2/workspaces/$WORKSPACE_ID/vars
+
+      - name: Setting name variable to terraform cloud
+        if: ${{ ! inputs.destroy }}
+        run: |
+          echo "----- setting variables to terraform cloud civo-token sensitive -----"
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.tf_api-token }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d "{\"data\": { \"type\": \"vars\",  \"attributes\": { \"key\":\"TF_VAR_name\", \"value\": \"${{inputs.name}}\", \"description\": \"civo token\", \
+          \"category\": \"terraform\", \"hcl\": false, \"sensitive\": false }}}" \
+          https://app.terraform.io/api/v2/workspaces/$WORKSPACE_ID/vars
+      
+      - name: Setting node-size variable to terraform cloud
+        if: ${{ ! inputs.destroy }}
+        run: |
+          echo "----- setting variables to terraform cloud civo-token sensitive -----"
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.tf_api-token }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d "{\"data\": { \"type\": \"vars\",  \"attributes\": { \"key\":\"TF_VAR_node-size\", \"value\": \"${{inputs.node-size}}\", \"description\": \"civo token\", \
+          \"category\": \"terraform\", \"hcl\": false, \"sensitive\": false }}}" \
+          https://app.terraform.io/api/v2/workspaces/$WORKSPACE_ID/vars
+      
+      - name: Setting node-count variable to terraform cloud
+        if: ${{ ! inputs.destroy }}
+        run: |
+          echo "----- setting variables to terraform cloud civo-token sensitive -----"
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.tf_api-token }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d "{\"data\": { \"type\": \"vars\",  \"attributes\": { \"key\":\"TF_VAR_node-count\", \"value\": \"${{inputs.node-count}}\", \"description\": \"civo token\", \
+          \"category\": \"terraform\", \"hcl\": false, \"sensitive\": false }}}" \
+          https://app.terraform.io/api/v2/workspaces/$WORKSPACE_ID/vars
+
+
+
+
+#      - uses: snow-monkeys-org/create-cluster-k8s-tf/.github/actions/setup-terraform-cloud@main
 #        with:
 #          organization: ${{ inputs.organization }}
 #          workspace: ${{ inputs.workspace }}

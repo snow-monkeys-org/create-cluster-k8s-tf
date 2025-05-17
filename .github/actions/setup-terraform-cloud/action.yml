@@ -6,19 +6,6 @@ inputs:
     description: "Message to print"
     required: false
     default: "Hello, world!"
-#inputs:
-#  organization:
-#    description: "Terraform Cloud organization name"
-#    required: true
-#  workspace:
-#    description: "Terraform Cloud workspace name"
-#    required: true
-#  tf_api-token:
-#    description: "Terraform Cloud API token"
-#    required: true
-#  civo-token:
-#    description: "Civo API token"
-#    required: false
 
 
 runs:
